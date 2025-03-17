@@ -8,6 +8,8 @@ router.post('/', unitController.createUnit);
 // Get all units
 router.get('/', unitController.getAllUnits);
 
+router.post('/blockid', unitController.getAllUnitsByBlockid);
+
 // Get a single unit by ID
 router.get('/:id', unitController.getUnitById);
 

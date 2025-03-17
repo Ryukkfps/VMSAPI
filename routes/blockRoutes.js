@@ -11,6 +11,8 @@ router.get('/', blockController.getAllBlocks);
 // Get a single block by ID
 router.get('/:id', blockController.getBlockById);
 
+router.post('/societyid', blockController.getAllBlocksBySocietyid);
+
 // Update a block
 router.patch('/:id', blockController.updateBlock);
 

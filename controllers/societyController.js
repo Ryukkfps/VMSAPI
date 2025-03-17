@@ -1,4 +1,4 @@
-const Society = require('../models/societyModel');
+const Society = require("../models/societyModel");
 
 // Create a new society
 exports.createSociety = async (req, res) => {
@@ -10,6 +10,24 @@ exports.createSociety = async (req, res) => {
     res.status(400).send(error);
   }
 };
+
+exports.getAllCities = async (req, res) => {
+  try {
+    const cities = await Society.find().distinct("City");
+    res.status(200).send(cities);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+exports.getAllSocietiesByCity = async (req, res) => {
+  try {
+    const societies = await Society.find({ City: req.body.city });
+    res.status(200).send(societies);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+}
 
 // Get all societies
 exports.getAllSocieties = async (req, res) => {
@@ -37,7 +55,10 @@ exports.getSocietyById = async (req, res) => {
 // Update a society
 exports.updateSociety = async (req, res) => {
   try {
-    const society = await Society.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    const society = await Society.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
     if (!society) {
       return res.status(404).send();
     }

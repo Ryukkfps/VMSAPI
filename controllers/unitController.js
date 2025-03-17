@@ -21,6 +21,16 @@ exports.getAllUnits = async (req, res) => {
   }
 };
 
+exports.getAllUnitsByBlockid = async (req, res) => {
+  try {
+    const units = await Unit.find({ BlockId: req.body.blockid });
+    res.status(200).send(units);
+  }
+  catch (error) {
+    res.status(500).send(error);
+  }
+}
+
 // Get a single unit by ID
 exports.getUnitById = async (req, res) => {
   try {

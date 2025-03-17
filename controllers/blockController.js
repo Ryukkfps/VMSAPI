@@ -21,6 +21,15 @@ exports.getAllBlocks = async (req, res) => {
   }
 };
 
+exports.getAllBlocksBySocietyid = async (req, res) => {
+  try {
+    const blocks = await Block.find({ SId: req.body.societyid });
+    res.status(200).send(blocks);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+}
+
 // Get a single block by ID
 exports.getBlockById = async (req, res) => {
   try {
