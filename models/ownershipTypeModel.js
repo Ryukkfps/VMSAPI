@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const OccupancyStatus = require('./occupancyStatusModel');
 const Schema = mongoose.Schema;
 
 // Define the OwnershipType schema

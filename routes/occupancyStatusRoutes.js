@@ -11,6 +11,8 @@ router.get('/', occupancyStatusController.getAllOccupancyStatuses);
 // Get a single occupancy status by ID
 router.get('/:id', occupancyStatusController.getOccupancyStatusById);
 
+router.get('/ownershipType/:id', occupancyStatusController.getOccupancyStatusByOwnershipType);
+
 // Update an occupancy status
 router.patch('/:id', occupancyStatusController.updateOccupancyStatus);
 

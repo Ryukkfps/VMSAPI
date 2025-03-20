@@ -34,6 +34,39 @@ exports.getHomeById = async (req, res) => {
   }
 };
 
+exports.getHomebyUserId = async (req, res) => {
+  try {
+    const home = await Home.find({ UserId: req.params.id })
+      .populate('UserId', 'Name') // Populate the User document and select the 'Name' field
+      .populate('SId', 'SocietyName') // Populate the Society document and select the 'SocietyName' field
+      .populate('BId', 'BlockName') // Populate the Block document and select the 'BlockName' field
+      .populate('UId', 'FlatNumber') // Populate the Unit document and select the 'FlatNumber' field
+      .populate('OwnershipType', 'TypeName') // Populate the OwnershipType document and select the 'TypeName' field
+      .populate('OccupancyStatus', 'OSName'); // Populate the OccupancyStatus document and select the 'OSName' field
+
+    if (!home || home.length === 0) {
+      return res.status(404).send('No homes found for the given user ID');
+    }
+
+    // Concatenate the names
+    const concatenatedNames = home.map(h => {
+      return {
+        User: h.UserId.Name,
+        Society: h.SId.SocietyName,
+        Block: h.BId.BlockName,
+        Unit: h.UId.FlatNumber,
+        OwnershipType: h.OwnershipType.TypeName,
+        OccupancyStatus: h.OccupancyStatus.OSName,
+      };
+    });
+    
+    res.status(200).send(concatenatedNames);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+
+
 // Update a home
 exports.updateHome = async (req, res) => {
   try {

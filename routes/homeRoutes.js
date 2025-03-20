@@ -11,6 +11,8 @@ router.get('/', homeController.getAllHomes);
 // Get a single home by ID
 router.get('/:id', homeController.getHomeById);
 
+router.get('/user/:id', homeController.getHomebyUserId);
+
 // Update a home
 router.patch('/:id', homeController.updateHome);
 

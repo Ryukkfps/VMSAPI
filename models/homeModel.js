@@ -4,7 +4,8 @@ const Schema = mongoose.Schema;
 // Define the Home schema
 const homeSchema = new Schema({
   UserId: {
-    type: Number,
+    type: Schema.Types.ObjectId,
+    ref: 'User',
     required: true
   },
   SId: {

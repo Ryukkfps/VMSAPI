@@ -34,6 +34,18 @@ exports.getOccupancyStatusById = async (req, res) => {
   }
 };
 
+exports.getOccupancyStatusByOwnershipType = async (req, res) => {
+  try {
+    const occupancyStatus = await OccupancyStatus.find({ OTypeId: req.params.id });
+    if (!occupancyStatus) {
+      return res.status(404).send();
+    }
+    res.status(200).send(occupancyStatus);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
 // Update an occupancy status
 exports.updateOccupancyStatus = async (req, res) => {
   try {
