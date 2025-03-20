@@ -3,13 +3,24 @@ const Home = require('../models/homeModel');
 // Create a new home
 exports.createHome = async (req, res) => {
   try {
+    const { UserId, SId, BId, UId } = req.body;
+
+    // Check if a home with the same UserId, SId, BId, and UId already exists
+    const existingHome = await Home.findOne({ UserId, SId, BId, UId });
+
+    if (existingHome) {
+      return res.status(409).send('A home with the same details already exists');
+    }
+
+    // Create a new home
     const home = new Home(req.body);
     await home.save();
     res.status(201).send(home);
   } catch (error) {
-    res.status(400).send(error);
+    res.status(400).send(error.message);
   }
 };
+
 
 // Get all homes
 exports.getAllHomes = async (req, res) => {
