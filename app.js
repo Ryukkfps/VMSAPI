@@ -13,6 +13,7 @@ const userRoutes = require('./routes/userRoutes');
 const roleRoutes = require('./routes/roleRoutes');
 const loginRoutes = require('./routes/loginRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
+const entryPermitRoutes = require('./routes/entryPermitRoutes');
 const mongoose = require('mongoose');
 const { swaggerUi, specs } = require('./swagger');
 require('dotenv').config();
@@ -35,6 +36,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/roles', roleRoutes);
 app.use('/api/login', loginRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/entry-permits', entryPermitRoutes);
 
 // Swagger documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
