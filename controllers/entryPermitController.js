@@ -4,24 +4,22 @@ const QRCode = require('qrcode');
 // Create a new entry permit and generate a QR code
 exports.createEntryPermit = async (req, res) => {
     try {
-        const { Name, TimeSpan } = req.body;
-
-        // Get the current date and time in IST
-        const now = new Date();
-        const ISTOffset = 330; // IST is UTC+5:30
-        const ISTTime = new Date(now.getTime() + ISTOffset * 60 * 1000);
-
+        const { Name, TimeSpan, UserId, DateTime } = req.body;
         // Create a new entry permit with IST DateTime
-        const entryPermit = new EntryPermit({ Name, TimeSpan, DateTime: ISTTime });
+
+        const newDateTime = new Date(DateTime);
+        const ISTOffset = 330; // IST is UTC+5:30
+        const ISTTime = new Date(newDateTime.getTime() + ISTOffset * 60 * 1000);
+        const entryPermit = new EntryPermit({ Name, TimeSpan, DateTime: ISTTime , UserId });
         await entryPermit.save();
 
         // Generate QR code
-        const qrCodeData = `Name: ${Name}, PassCode: ${entryPermit.PassCode}, DateTime: ${ISTTime}`;
-        const qrCodeImage = await QRCode.toDataURL(qrCodeData);
+        // const qrCodeData = `Name: ${Name}, PassCode: ${entryPermit.PassCode}, DateTime: ${ISTTime}`;
+        // const qrCodeImage = await QRCode.toDataURL(qrCodeData);
 
-        // Update the entry permit with the QR code image source
-        entryPermit.ImageSource = qrCodeImage;
-        await entryPermit.save();
+        // // Update the entry permit with the QR code image source
+        // entryPermit.ImageSource = qrCodeImage;
+        // await entryPermit.save();
 
         res.status(201).json(entryPermit);
     } catch (error) {
@@ -47,7 +45,7 @@ exports.validateEntryPermit = async (req, res) => {
         expiryTime.setMinutes(expiryTime.getMinutes() + entryPermit.TimeSpan);
 
         // Check if the current IST time is past the expiry time
-        const isValid = currentISTTime < expiryTime;
+        const isValid = currentISTTime < expiryTime && currentISTTime > entryPermit.DateTime;
 
         res.status(200).json({ valid: isValid });
     } catch (error) {
