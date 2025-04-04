@@ -17,4 +17,6 @@ router.patch('/:id', userController.updateUser);
 // Delete a user
 router.delete('/:id', userController.deleteUser);
 
+router.post('/save-fcm-token', userController.saveFCMToken);
+
 module.exports = router;

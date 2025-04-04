@@ -60,3 +60,23 @@ exports.deleteUser = async (req, res) => {
     res.status(500).send(error);
   }
 };
+
+exports.saveFCMToken = async (req, res) => {
+  try {
+    const { userId, fcmToken } = req.body;
+
+    if (!userId || !fcmToken) {
+      return res.status(400).json({ error: 'User ID and FCM Token are required' });
+    }
+
+    const user = await User.findByIdAndUpdate(userId, { fcmToken }, { new: true });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.status(200).json({ message: 'FCM Token saved successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

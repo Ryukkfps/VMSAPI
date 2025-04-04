@@ -18,6 +18,9 @@ const userSchema = new Schema({
     required: true,
     match: [/^\d{10}$/, 'Please enter a valid 10-digit phone number']
   },
+  fcmToken: {
+    type: String
+  },
   RoleId: {
     type: Schema.Types.ObjectId,
     ref: 'Role',

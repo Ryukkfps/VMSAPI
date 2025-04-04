@@ -14,6 +14,7 @@ const roleRoutes = require('./routes/roleRoutes');
 const loginRoutes = require('./routes/loginRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const entryPermitRoutes = require('./routes/entryPermitRoutes');
+const permitRequestsRoutes = require('./routes/permitRequestRoutes');
 const mongoose = require('mongoose');
 const { swaggerUi, specs } = require('./swagger');
 require('dotenv').config();
@@ -37,6 +38,7 @@ app.use('/api/roles', roleRoutes);
 app.use('/api/login', loginRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/entry-permits', entryPermitRoutes);
+app.use('/api/permit-requests', permitRequestsRoutes);
 
 // Swagger documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
@@ -49,29 +51,6 @@ const io = socketIo(server, {
   cors: {
     origin: '*',
   },
-});
-
-// Socket.IO connection
-io.on('connection', (socket) => {
-  console.log('New client connected:', socket.id);
-
-  // Listen for entry requests
-  socket.on('entryRequest', (data) => {
-    console.log('Entry request received:', data);
-    // Broadcast the entry request to all connected clients except the sender
-    socket.broadcast.emit('entryRequest', data);
-  });
-
-  // Listen for approval or rejection
-  socket.on('entryResponse', (data) => {
-    console.log('Entry response received:', data);
-    // Broadcast the entry response to all connected clients
-    io.emit('entryResponse', data);
-  });
-
-  socket.on('disconnect', () => {
-    console.log('Client disconnected:', socket.id);
-  });
 });
 
 // MongoDB connection
