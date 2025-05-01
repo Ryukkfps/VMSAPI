@@ -29,6 +29,13 @@ const userSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  password: {
+    type: String,
+  },
+  status: {
+    type: Boolean,
+    default: true
   }
 });
 

@@ -1,18 +1,20 @@
 const PermitRequest = require("../models/permitRequestModel");
 const Home = require("../models/homeModel"); // Import Home model
 const User = require("../models/userModel"); // Import User model
+const Notification = require("../models/notificationModel"); // Add this import
 const admin = require("../firebase");
 
 // Create a new permit request
 exports.createPermitRequest = async (req, res) => {
   try {
-    const { name, purpose, unitId } = req.body;
+    const { name, purpose, unitId, createdby } = req.body;
 
     const permitRequest = new PermitRequest({
       name,
       purpose,
       unitId,
       status: "pending",
+      createdby: createdby
     });
 
     const savedRequest = await permitRequest.save();
@@ -32,13 +34,25 @@ exports.createPermitRequest = async (req, res) => {
     // Extract FCM tokens
     const fcmTokens = users.map((user) => user.fcmToken).filter(Boolean);
 
+    // Create and save notifications for each user
+    const notificationPromises = users.map((user) => {
+      return new Notification({
+        requestId: savedRequest._id,
+        userId: user._id,
+        NotificationTitle: "Entry Request",
+        NotificationBody: `${name} is at the Gate. \nPurpose of Visit : ${purpose}. \nShall we allow entry?`
+      }).save();
+    });
+
+    await Promise.all(notificationPromises);
+
     if (fcmTokens.length > 0) {
       const message = {
         notification: {
-          title: "New Permit Request",
-          body: `A new permit request "${name}" has been created.`,
+          title: "Entry Request",
+          body: `${name} is at the Gate. \nPurpose of Visit : ${purpose}. \nShall we allow entry?`,
         },
-        tokens: fcmTokens, // Send to multiple users
+        tokens: fcmTokens,
       };
 
       // Send notification

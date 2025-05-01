@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const http = require('http');
 const socketIo = require('socket.io');
+const cors = require('cors');
 const blockRoutes = require('./routes/blockRoutes');
 const homeRoutes = require('./routes/homeRoutes');
 const societyRoutes = require('./routes/societyRoutes');
@@ -15,6 +16,7 @@ const loginRoutes = require('./routes/loginRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const entryPermitRoutes = require('./routes/entryPermitRoutes');
 const permitRequestsRoutes = require('./routes/permitRequestRoutes');
+const cityRoutes = require('./routes/cityRoutes');
 const mongoose = require('mongoose');
 const { swaggerUi, specs } = require('./swagger');
 require('dotenv').config();
@@ -23,6 +25,11 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Middleware
+app.use(cors({
+  origin: '*', // In production, replace with your frontend URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS','PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(bodyParser.json());
 app.use(morgan('dev'));
 
@@ -39,6 +46,7 @@ app.use('/api/login', loginRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/entry-permits', entryPermitRoutes);
 app.use('/api/permit-requests', permitRequestsRoutes);
+app.use('/api/cities', cityRoutes);
 
 // Swagger documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));

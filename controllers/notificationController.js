@@ -11,6 +11,15 @@ exports.createNotification = async (req, res) => {
   }
 };
 
+exports.getAllNotificationsByUserid = async (req, res) => {
+  try {
+    const notifications = await Notification.find({ userId: req.params.userId });
+    res.status(200).send(notifications);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+
 // Update the status of a notification
 exports.updateNotificationStatus = async (req, res) => {
   try {

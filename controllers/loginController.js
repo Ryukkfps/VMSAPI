@@ -87,6 +87,30 @@ exports.sendRegEMAILOtp = async (req, res) => {
   res.status(200).json(otps);
 };
 
+exports.Login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required' });
+    }
+
+    const user = await User.findOne({ Email: { $regex: new RegExp(`^${email}$`, 'i') } });
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+    const isPasswordValid = user.password == password;
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    const token = generateToken(user);
+    res.status(200).json({ token });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 const generateToken = (user) => {
   const payload = { userId: user._id };
   const secretKey = process.env.JWT_SECRET;
