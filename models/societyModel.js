@@ -23,6 +23,11 @@ const societySchema = new Schema({
     type: Number,
     required: true
   },
+  AdminId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
   createdAt: {
     type: Date,
     default: Date.now

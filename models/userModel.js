@@ -36,6 +36,10 @@ const userSchema = new Schema({
   status: {
     type: Boolean,
     default: true
+  },
+  SId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Society',
   }
 });
 

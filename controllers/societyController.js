@@ -29,6 +29,15 @@ exports.getAllSocietiesByCity = async (req, res) => {
   }
 }
 
+exports.getAllSocietiesbyAdmin = async (req, res) => {
+  try {
+    const societies = await Society.find({ AdminId: req.body.AdminId });
+    res.status(200).send(societies);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+}
+
 // Get all societies
 exports.getAllSocieties = async (req, res) => {
   try {
@@ -42,7 +51,7 @@ exports.getAllSocieties = async (req, res) => {
 // Get a single society by ID
 exports.getSocietyById = async (req, res) => {
   try {
-    const society = await Society.findById(req.params.id);
+    const society = await Society.find({ AdminId: req.params.id });
     if (!society) {
       return res.status(404).send();
     }

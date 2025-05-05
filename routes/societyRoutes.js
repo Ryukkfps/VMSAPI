@@ -19,6 +19,8 @@ router.patch('/:id', societyController.updateSociety);
 // Delete a society
 router.delete('/:id', societyController.deleteSociety);
 
+router.post('/admin', societyController.getAllSocietiesbyAdmin);
+
 router.post('/city', societyController.getAllSocietiesByCity);
 
 module.exports = router;

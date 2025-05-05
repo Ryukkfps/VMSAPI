@@ -15,6 +15,50 @@ exports.createHome = async (req, res) => {
     // Create a new home
     const home = new Home(req.body);
     await home.save();
+
+    // Find admin users to notify
+    const User = require('../models/userModel');
+    const Notification = require('../models/notificationModel');
+    
+    // Find society admins
+    const admins = await User.find({ 
+      SId: SId, 
+      RoleId: "67d679fb45044b166b2fc8ec", // Admin role ID
+      fcmToken: { $exists: true, $ne: null }
+    });
+
+    // Create notifications for admins
+    const notificationPromises = admins.map(admin => {
+      return new Notification({
+        requestId: home._id,
+        userId: admin._id,
+        NotificationTitle: "Home Registration Request",
+        NotificationBody: `A new home registration requires your approval.`
+      }).save();
+    });
+
+    await Promise.all(notificationPromises);
+
+    // Send FCM notifications if possible
+    if (admins.length > 0 && require('../firebase')) {
+      const admin = require('../firebase');
+      const fcmTokens = admins.map(user => user.fcmToken).filter(Boolean);
+      
+      if (fcmTokens.length > 0) {
+        const message = {
+          notification: {
+            title: "Home Registration Request",
+            body: "A new home registration requires your approval."
+          },
+          tokens: fcmTokens
+        };
+
+        admin.messaging().sendEachForMulticast(message)
+          .then(response => console.log("FCM Notification sent successfully"))
+          .catch(error => console.error("Error sending FCM notification:", error));
+      }
+    }
+
     res.status(201).send(home);
   } catch (error) {
     res.status(400).send(error.message);
