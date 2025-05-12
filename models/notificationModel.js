@@ -4,7 +4,12 @@ const Schema = mongoose.Schema;
 const notificationSchema = new Schema({
   requestId: {
     type: Schema.Types.ObjectId,
-    ref: 'PermitRequest',
+    refPath: 'requestType', 
+    required: true
+  },
+  requestType: {
+    type: String,
+    enum: ['permitRequest', 'homeRegistration'],
     required: true
   },
   userId: {
@@ -23,6 +28,15 @@ const notificationSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  isViewed: {
+    type: Boolean,
+    default: false
+  },
+  status: {
+    type: String,
+    enum: ['pending', 'approved', 'denied'],
+    default: 'pending'
   }
 });
 

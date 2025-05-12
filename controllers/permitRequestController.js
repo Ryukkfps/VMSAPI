@@ -38,6 +38,7 @@ exports.createPermitRequest = async (req, res) => {
     const notificationPromises = users.map((user) => {
       return new Notification({
         requestId: savedRequest._id,
+        requestType: 'permitRequest', // Add this line to specify the request type
         userId: user._id,
         NotificationTitle: "Entry Request",
         NotificationBody: `${name} is at the Gate. \nPurpose of Visit : ${purpose}. \nShall we allow entry?`
@@ -116,7 +117,44 @@ exports.updatePermitRequest = async (req, res) => {
     if (name) permitRequest.name = name;
     if (purpose) permitRequest.purpose = purpose;
     if (unitId) permitRequest.unitId = unitId;
-    if (status) permitRequest.status = status;
+    
+    // Check if status is being updated
+    if (status && status !== permitRequest.status) {
+      permitRequest.status = status;
+      
+      // Get the user who created the permit request
+      const creator = await User.findById(permitRequest.createdby);
+      
+      if (creator) {
+        // Create notification for the creator
+        const notification = new Notification({
+          requestId: permitRequest._id,
+          requestType: 'permitRequest',
+          userId: creator._id,
+          NotificationTitle: "Permit Request Update",
+          NotificationBody: `Your entry request for ${permitRequest.name} has been ${status}.`
+        });
+        
+        await notification.save();
+        
+        // Send FCM notification if user has fcmToken
+        if (creator.fcmToken) {
+          const message = {
+            notification: {
+              title: "Permit Request Update",
+              body: `Your entry request for ${permitRequest.name} has been ${status}.`
+            },
+            token: creator.fcmToken
+          };
+          
+          admin.messaging().send(message)
+            .then(response => console.log("FCM Notification sent successfully:", response))
+            .catch(error => console.error("Error sending FCM notification:", error));
+        }
+      }
+    } else if (status) {
+      permitRequest.status = status;
+    }
 
     const updatedRequest = await permitRequest.save();
     res.json(updatedRequest);

@@ -7,7 +7,7 @@ exports.createUser = async (req, res) => {
     const user = new User(req.body);
     console.log(user)
     if (user.RoleId == null) {
-      user.RoleId = "67d679fb45044b166b2fc8ec";
+      user.RoleId = "680fc6610ea85ca06eeca35b";
     }
     await user.save();
     res.status(201).send(user);

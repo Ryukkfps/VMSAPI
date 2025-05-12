@@ -13,8 +13,19 @@ exports.createNotification = async (req, res) => {
 
 exports.getAllNotificationsByUserid = async (req, res) => {
   try {
+    // First fetch the notifications with their original isViewed state
     const notifications = await Notification.find({ userId: req.params.userId });
+    
+    // Send the original notifications to the client
     res.status(200).send(notifications);
+    
+    // Then update all unviewed notifications to mark them as viewed (after response is sent)
+    if (notifications.length > 0) {
+      await Notification.updateMany(
+        { userId: req.params.userId, isViewed: false },
+        { $set: { isViewed: true } }
+      );
+    }
   } catch (error) {
     res.status(500).send(error.message);
   }
@@ -24,12 +35,20 @@ exports.getAllNotificationsByUserid = async (req, res) => {
 exports.updateNotificationStatus = async (req, res) => {
   try {
     const { id, status } = req.body;
-    const notification = await Notification.findByIdAndUpdate(id, { status }, { new: true });
+    
+    const notification = await Notification.findById(id);
     if (!notification) {
-      return res.status(404).send('Notification not found');
+      return res.status(404).json({ message: "Notification not found" });
     }
-    res.status(200).send(notification);
+    
+    // Update status if provided
+    if (status && status !== notification.status) {
+      notification.status = status;
+    }
+    
+    const updatedNotification = await notification.save();
+    res.status(200).json(updatedNotification);
   } catch (error) {
-    res.status(400).send(error.message);
+    res.status(400).json({ message: error.message });
   }
 };

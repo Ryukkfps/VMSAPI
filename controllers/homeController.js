@@ -31,6 +31,7 @@ exports.createHome = async (req, res) => {
     const notificationPromises = admins.map(admin => {
       return new Notification({
         requestId: home._id,
+        requestType: 'homeRegistration', // Add this line to specify the request type
         userId: admin._id,
         NotificationTitle: "Home Registration Request",
         NotificationBody: `A new home registration requires your approval.`
