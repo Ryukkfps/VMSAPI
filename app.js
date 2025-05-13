@@ -19,6 +19,8 @@ const permitRequestsRoutes = require('./routes/permitRequestRoutes');
 const cityRoutes = require('./routes/cityRoutes');
 const mongoose = require('mongoose');
 const { swaggerUi, specs } = require('./swagger');
+const blogPostRoutes = require('./routes/blogPostRoutes');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
@@ -47,6 +49,8 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/entry-permits', entryPermitRoutes);
 app.use('/api/permit-requests', permitRequestsRoutes);
 app.use('/api/cities', cityRoutes);
+app.use('/api/blog-posts', blogPostRoutes);
+app.use('/wwwroot', express.static(path.join(__dirname, 'wwwroot'))); // Serve static files
 
 // Swagger documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));

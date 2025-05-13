@@ -107,6 +107,7 @@ exports.getHomebyUserId = async (req, res) => {
     // Concatenate the names
     const concatenatedNames = home.map(h => {
       return {
+        id: h._id,
         User: h.UserId.Name,
         Society: h.SId.SocietyName,
         Block: h.BId.BlockName,
