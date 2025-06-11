@@ -19,6 +19,11 @@ const blogPostSchema = new Schema({
     type: String,
     required: false
   },
+  SId:{
+    type: Schema.Types.ObjectId,
+    ref:'Society',
+    required: true
+  },
   createdAt: {
     type: Date,
     default: Date.now

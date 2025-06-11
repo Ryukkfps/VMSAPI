@@ -34,6 +34,9 @@ app.use(cors({
 }));
 app.use(bodyParser.json());
 app.use(morgan('dev'));
+app.use(express.static('wwwroot'));
+
+
 
 // Routes
 app.use('/api/blocks', blockRoutes);

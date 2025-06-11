@@ -22,5 +22,6 @@ router.get('/', blogPostController.getAllPosts);
 router.get('/:id', blogPostController.getPostById);
 router.put('/:id', upload.single('image'), blogPostController.updatePost);
 router.delete('/:id', blogPostController.deletePost);
+router.get('/society/:SId',blogPostController.getAllPostBySociety);
 
 module.exports = router;

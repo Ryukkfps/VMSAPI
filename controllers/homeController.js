@@ -105,19 +105,19 @@ exports.getHomebyUserId = async (req, res) => {
     }
 
     // Concatenate the names
-    const concatenatedNames = home.map(h => {
-      return {
-        id: h._id,
-        User: h.UserId.Name,
-        Society: h.SId.SocietyName,
-        Block: h.BId.BlockName,
-        Unit: h.UId.FlatNumber,
-        OwnershipType: h.OwnershipType.TypeName,
-        OccupancyStatus: h.OccupancyStatus.OSName,
-      };
-    });
+    // const concatenatedNames = home.map(h => {
+    //   return {
+    //     id: h._id,
+    //     User: h.UserId.Name,
+    //     Society: h.SId.SocietyName,
+    //     Block: h.BId.BlockName,
+    //     Unit: h.UId.FlatNumber,
+    //     OwnershipType: h.OwnershipType.TypeName,
+    //     OccupancyStatus: h.OccupancyStatus.OSName,
+    //   };
+    // });
     
-    res.status(200).send(concatenatedNames);
+    res.status(200).send(home);
   } catch (error) {
     res.status(500).send(error.message);
   }
