@@ -54,7 +54,7 @@ exports.getAllPostBySociety = async(req, res) => {
     const skip = (pageNumber - 1) * limitNumber;
 
     const totalPosts = await BlogPost.countDocuments({ SId: req.params.SId });
-    const posts = await BlogPost.find({ SId: req.params.SId })
+    const posts = await BlogPost.find({ SId: req.params.SId }).populate('author', '_id Name')
       .skip(skip)
       .limit(limitNumber)
       .sort({ createdAt: -1 }); // Sort by most recent first

@@ -26,6 +26,11 @@ const entryPermitSchema = new Schema({
     ref: "User",
     required: true,
   },
+  UId: {
+    type: Schema.Types.ObjectId,
+    ref: "Unit",
+    required: true,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
