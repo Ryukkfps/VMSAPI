@@ -77,6 +77,8 @@ exports.getAllHomes = async (req, res) => {
   }
 };
 
+
+
 // Get a single home by ID
 exports.getHomeById = async (req, res) => {
   try {
@@ -134,6 +136,40 @@ exports.updateHome = async (req, res) => {
     res.status(200).send(home);
   } catch (error) {
     res.status(400).send(error);
+  }
+};
+
+exports.updateHomeStatus = async (req, res) => {
+  try {
+    const home = await Home.findByIdAndUpdate(req.params.id, { status: req.body.status }, { new: true });
+    if (!home) {
+      return res.status(404).send();
+    }
+    res.status(200).send(home);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+};
+
+// Get homes by societyID whose status is false
+exports.getHomesBySocietyIdAndStatusFalse = async (req, res) => {
+  try {
+    const societyId = req.params.id;
+    console.log(societyId);
+    const homes = await Home.find({ SId: societyId, status: false })
+      .populate('UserId', 'Name')
+      .populate('SId', 'SocietyName')
+      .populate('BId', 'BlockName')
+      .populate('UId', 'FlatNumber')
+      .populate('OwnershipType', 'TypeName')
+      .populate('OccupancyStatus', 'OSName');
+
+    if (!homes || homes.length === 0) {
+      return res.status(404).send('No homes found for the given society ID with status false');
+    }
+    res.status(200).send(homes);
+  } catch (error) {
+    res.status(500).send(error.message);
   }
 };
 

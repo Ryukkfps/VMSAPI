@@ -13,6 +13,10 @@ router.get('/:id', homeController.getHomeById);
 
 router.get('/user/:id', homeController.getHomebyUserId);
 
+router.get('/society/:id', homeController.getHomesBySocietyIdAndStatusFalse);
+
+router.patch('/status/:id', homeController.updateHomeStatus);
+
 // Update a home
 router.patch('/:id', homeController.updateHome);
 

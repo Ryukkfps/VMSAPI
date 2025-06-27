@@ -1,5 +1,7 @@
 const User = require("../models/userModel");
 const Role = require("../models/roleModel");
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 // Create a new user
 exports.createUser = async (req, res) => {
@@ -10,7 +12,9 @@ exports.createUser = async (req, res) => {
       user.RoleId = "680fc6610ea85ca06eeca35b";
     }
     await user.save();
-    res.status(201).send(user);
+    console.log('User Saved')
+    const token = generateToken(user);
+    res.status(200).json({ token });
   } catch (error) {
     res.status(400).send(error);
   }
@@ -174,4 +178,12 @@ exports.updateAdminStatus = async (req, res) => {
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
+};
+
+
+const generateToken = (user) => {
+  const payload = { userId: user._id };
+  const secretKey = process.env.JWT_SECRET;
+
+  return jwt.sign(payload, secretKey);
 };
