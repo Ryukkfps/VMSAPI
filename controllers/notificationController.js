@@ -56,10 +56,14 @@ exports.updateNotificationStatus = async (req, res) => {
 
 exports.getAllNotificationsByUseridUnviewed = async (req, res) => {
   try {
+    // First fetch the notifications with their original isViewed state
     const notifications = await Notification.find({ userId: req.params.userId , isViewed: false });
-
-    const count = notifications.length;
-    res.status(200).send(count);
+    if (!notifications) {
+      return res.status(404).json({ message: "Notifications not found" });
+    }
+    // Send the original notifications to the client
+    res.status(200).send({count: notifications.length});
+    
   } catch (error) {
     res.status(500).send(error.message);
   }
